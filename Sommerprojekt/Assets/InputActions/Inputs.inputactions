@@ -47,6 +47,17 @@
                 },
                 {
                     "name": "",
+                    "id": "07375acc-174a-45ad-9a6c-948f677116ed",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "48b740e0-99c6-4ab7-b237-37383f356377",
                     "path": "<Keyboard>/a",
                     "interactions": "Hold",
@@ -58,9 +69,31 @@
                 },
                 {
                     "name": "",
+                    "id": "688513fb-b3f7-4163-a0e3-803671791b7c",
+                    "path": "<Gamepad>/rightStick/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MoveLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "c84ca522-8b00-4a27-86ef-1dc50bbbf39d",
                     "path": "<Keyboard>/d",
                     "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MoveRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5b461bcf-d357-4ad6-9b3f-0b525e01d86b",
+                    "path": "<Gamepad>/rightStick/right",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "MoveRight",
