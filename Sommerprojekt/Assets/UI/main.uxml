@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="Container" style="display: flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.51); background-image: none; border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px; flex-grow: 1;">
+        <ui:VisualElement name="Box" style="align-items: center; justify-content: center; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; background-color: rgb(12, 238, 241); flex-shrink: 0; flex-grow: 0; flex-basis: 0; width: 0; height: 0; -unity-text-outline-color: rgb(9, 224, 221); min-width: 450px; min-height: 400px; top: 100px; border-top-left-radius: 30px; border-bottom-left-radius: 30px; border-top-right-radius: 30px; border-bottom-right-radius: 30px;">
+            <ui:Label text="Main Menu" display-tooltip-when-elided="true" enable-rich-text="true" name="MenuTitel" style="left: auto; height: 56px; width: 152px; position: absolute; top: 30px; -unity-text-align: middle-center; font-size: 25px; -unity-font-style: bold; color: rgb(77, 4, 4);" />
+            <ui:Button text="Start Game" display-tooltip-when-elided="true" name="StartGame" style="height: 94px; width: 202px; max-height: 50px; max-width: 160px; font-size: 18px; color: rgb(49, 137, 0);" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
