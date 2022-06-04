@@ -18,7 +18,7 @@ TagManager:
   - BG
   - 
   - Ground
-  - 
+  - Wall
   - 
   - 
   - 
@@ -48,6 +48,9 @@ TagManager:
     locked: 0
   - name: Plattforms
     uniqueID: 2297323579
+    locked: 0
+  - name: Walls
+    uniqueID: 2349225985
     locked: 0
   - name: Deco
     uniqueID: 1476897433

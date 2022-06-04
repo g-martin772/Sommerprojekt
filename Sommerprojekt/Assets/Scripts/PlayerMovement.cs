@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField]
 	private float wallJumpForce;
 	[SerializeField]
+	private float sprintModifier = 1.3f;
+	[SerializeField]
 	private Transform groundCheck = null;
 	[SerializeField]
 	private Transform wallCheck = null;
@@ -36,7 +38,9 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField]
 	private Vector2 wallHopDirection;
 	[SerializeField]
-	private	Vector2 wallJumpDirection;
+	private Vector2 wallJumpDirection;
+	[SerializeField]
+	private IngameUI ui;
 
 	private bool isFascingRight = true;
 	private bool isJumping = false;
@@ -45,11 +49,18 @@ public class PlayerMovement : MonoBehaviour
 	private bool isGrounded = false;
 	private bool isTouchingWall;
 	private bool isWallSliding;
+	private bool isJumpingFromLeft = false;
+	private bool isJumpingFromRight = false;
+	private bool isSprinting = false;
+	private bool isPaused = false;
 
 	private int amountOfJumpsLeft;
 	private int facingDirection = 1;
 
 	private float movementInputDirection;
+	private float time = 2;
+	private float timeElapsed;
+	private float speedModifier = 1;
 
 	private Rigidbody2D rb;
 	private PlayerInput input;
@@ -64,6 +75,7 @@ public class PlayerMovement : MonoBehaviour
 		amountOfJumpsLeft = amountOfJumps;
 
 		input.actions["Jump"].started += Jump;
+		input.actions["Pause"].started += PauseMenu;
 
 		wallJumpDirection.Normalize();
 		wallHopDirection.Normalize();
@@ -73,20 +85,21 @@ public class PlayerMovement : MonoBehaviour
 	{
 		CheckInput();
 		CheckMovementDirection();
-		UpdateAnimations();
 		CheckIfCanJump();
 		CheckIfWallSliding();
+		checkIfIsSprinting();
+		CheckSurroundings();
+		ApplyMovement();
+		UpdateAnimations();
 	}
 
 	private void FixedUpdate()
 	{
-		ApplyMovement();
-		CheckSurroundings();
 	}
 
 	private void CheckIfWallSliding()
 	{
-		if (isTouchingWall && !isGrounded && rb.velocity.y < 0)
+		if (isTouchingWall && !isGrounded && rb.velocity.y < 0.01f)
 		{
 			isWallSliding = true;
 		}
@@ -98,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
 
 	private void CheckIfCanJump()
 	{
-		if (isGrounded && rb.velocity.y <= 0 && !isJumping)
+		if (isGrounded && rb.velocity.y <= 0.01f && !isJumping)
 		{
 			amountOfJumpsLeft = amountOfJumps;
 			canJump = true;
@@ -146,7 +159,54 @@ public class PlayerMovement : MonoBehaviour
 		{
 			rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * variableJumpForceMuliplyer);
 		}
+	}
 
+	private void checkForMenuInput()
+	{
+		
+	}
+
+	public void callPauseMenu()
+	{
+		PauseMenu(new InputAction.CallbackContext());
+	}
+
+	private void PauseMenu(InputAction.CallbackContext context)
+	{
+		if (isPaused)
+		{
+			Time.timeScale = 1;
+			input.actions["Jump"].Enable();
+			input.actions["Sprint"].Enable();
+			input.actions["MoveLeft"].Enable();
+			input.actions["MoveRight"].Enable();
+			isPaused = false;
+			ui.HidePauseMenu();
+		}
+		else
+		{
+			Time.timeScale = 0;
+			input.actions["Jump"].Disable();
+			input.actions["Sprint"].Disable();
+			input.actions["MoveLeft"].Disable();
+			input.actions["MoveRight"].Disable();
+			isPaused = true;
+			ui.ShowPauseMenu();
+		}
+	}
+
+	private	void checkIfIsSprinting()
+	{
+		if (input.actions["Sprint"].IsPressed() && !isTouchingWall && isGrounded && isWalking)
+		{
+			isSprinting = true;
+			speedModifier = sprintModifier;
+		}
+		else
+		{
+			isSprinting = false;
+			speedModifier = 1.0f;
+		}
 	}
 
 	private void UpdateAnimations()
@@ -154,6 +214,8 @@ public class PlayerMovement : MonoBehaviour
 		anim.SetBool("isWalking", isWalking);
 		anim.SetBool("isGrounded", isGrounded);
 		anim.SetFloat("yVelocity", rb.velocity.y);
+		anim.SetBool("isSprinting", isSprinting);
+		//anim.SetBool("isLedgeClimbing", isLedgeClimbing);
 	}
 
 	private void Jump(InputAction.CallbackContext context)
@@ -176,6 +238,60 @@ public class PlayerMovement : MonoBehaviour
 			amountOfJumpsLeft--;
 			Vector2 forceToAdd = new Vector2(wallJumpForce * wallJumpDirection.x * -facingDirection, wallJumpForce * wallJumpDirection.y);
 			rb.AddForce(forceToAdd, ForceMode2D.Impulse);
+
+			if (facingDirection == 1)
+			{
+				isJumpingFromRight = true;
+				isJumpingFromLeft = false;
+			}
+			else if (facingDirection == -1)
+			{
+				isJumpingFromLeft = true;
+				isJumpingFromRight = false;
+			}
+
+			if (isJumpingFromLeft)
+			{
+				isJumpingFromLeft = false;
+			}
+			else if (isJumpingFromRight)
+			{
+				isJumpingFromRight = false;
+			}
+		}
+	}
+
+	IEnumerator lockLeft()
+	{
+		while (time > timeElapsed)
+		{
+			timeElapsed += Time.deltaTime;
+			input.actions["MoveLeft"].Disable();
+			input.actions["MoveLeft"].Dispose();
+			yield return new WaitForEndOfFrame();
+		}
+		if (time <= timeElapsed)
+		{
+			input.actions["MoveRight"].Enable();
+			timeElapsed = 0;
+			yield return null;
+		}
+	}
+
+	IEnumerator lockRight()
+	{
+		while (time > timeElapsed)
+		{
+			timeElapsed += Time.deltaTime;
+			input.actions["MoveRight"].Disable();
+			input.actions["MoveRight"].Dispose();
+			yield return new WaitForEndOfFrame();
+		}
+		if (time <= timeElapsed)
+		{
+			input.actions["MoveLeft"].Enable();
+			timeElapsed = 0;
+			yield return null;
 		}
 	}
 
@@ -183,7 +299,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		if (isGrounded)
 		{
-			rb.velocity = new Vector2(MovementSpeed * movementInputDirection, rb.velocity.y);
+			rb.velocity = new Vector2(MovementSpeed * movementInputDirection * speedModifier, rb.velocity.y);
 		}
 		else if (!isGrounded && !isWallSliding && movementInputDirection != 0)
 		{
@@ -195,7 +311,7 @@ public class PlayerMovement : MonoBehaviour
 				rb.velocity = new Vector2(MovementSpeed * movementInputDirection, rb.velocity.y);
 			}
 		}
-		else if(!isGrounded && !isWallSliding && movementInputDirection == 0)
+		else if (!isGrounded && !isWallSliding && movementInputDirection == 0)
 		{
 			rb.velocity = new Vector2(rb.velocity.x * airDragMultiplayer, rb.velocity.y);
 		}
@@ -207,6 +323,7 @@ public class PlayerMovement : MonoBehaviour
 				rb.velocity = new Vector2(rb.velocity.x, -wallSlideSpeed);
 			}
 		}
+
 	}
 
 	private void CheckMovementDirection()

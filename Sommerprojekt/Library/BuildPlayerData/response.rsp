@@ -21,7 +21,6 @@
 -s="E:\C#-Projekts\Sommerprojekt\Sommerprojekt\Library\PlayerScriptAssemblies"
 -s="E:\C#-Projekts\Sommerprojekt\Sommerprojekt\Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\AOT"
 -s="E:\C#-Projekts\Sommerprojekt\Sommerprojekt\Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\Portable"
--s="E:\C#-Projekts\Sommerprojekt\Sommerprojekt\Packages\com.unity.ui\External"
 -s="E:\C#-Projekts\Sommerprojekt\Sommerprojekt\Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime"
 -s="E:\C#-Projekts\Sommerprojekt\Sommerprojekt\Library\PackageCache\com.unity.ext.nunit@1.0.6\net35\unity-custom"
 -s="E:\Software\Unity\2020.3.24f1\Editor\Data\Managed\UnityEngine"
